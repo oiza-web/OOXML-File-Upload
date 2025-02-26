@@ -9,10 +9,10 @@
       type="file"
       ref="fileInput"
       @change="handleFileUpload"
-      accept=".docx"
+      accept=".docx, .xml"
       style="display: none"
     />
-    <p v-if="!fileName">Drag and drop your OOXML file here, or click to select</p>
+    <p v-if="!fileName">Drag and drop your OOXML or XML file here, or click to select</p>
     <p v-else>{{ fileName }}</p>
     <button v-if="fileName" @click="removeFile">Remove File</button>
   </div>
@@ -35,11 +35,17 @@ export default {
       this.processFile(file);
     },
     processFile(file) {
-      if (file && file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      const validTypes = [
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/xml', 
+        'text/xml' 
+      ];
+      
+      if (file && validTypes.includes(file.type)) {
         this.fileName = file.name;
         this.$emit('file-uploaded', file);
       } else {
-        alert('Please upload a valid OOXML file.');
+        alert('Please upload a valid OOXML (.docx) or XML file.');
       }
     },
     removeFile() {
